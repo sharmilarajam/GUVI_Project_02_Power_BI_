@@ -44,7 +44,7 @@ The project uses the following datasets:
 ### 🔹 Sales Analysis
 - Overall sales trends and seasonal patterns
 - Sales by product, store, and currency
-- Exchange rate impact on global revenue
+
 
 ### 🔹 Product Analysis
 - Top-selling and low-performing products
@@ -53,7 +53,7 @@ The project uses the following datasets:
 ### 🔹 Store Analysis
 - Sales vs. store size
 - High-performing regions and store-wise sales ranking
-- Store opening timelines vs. performance
+- Store  performance
 
 ---
 
