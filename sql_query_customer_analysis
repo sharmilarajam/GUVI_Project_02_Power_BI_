@@ -1,0 +1,110 @@
+
+
+
+
+use electronics
+
+###gender count
+SELECT 
+    Gender,
+    COUNT(*) AS customer_count
+FROM customer
+GROUP BY Gender;
+
+##customer age wise grouping
+SELECT 
+    (2025 - b_year) AS Age,
+    COUNT(*) AS customer_count
+FROM customer
+GROUP BY Age
+ORDER BY Age;
+
+
+##customer count by country
+SELECT 
+    Country,
+    COUNT(*) AS customer_count
+FROM customer
+GROUP BY Country
+ORDER BY customer_count DESC;
+
+###customer by continent
+SELECT 
+    Continent,
+    COUNT(*) AS customer_count
+FROM customer
+GROUP BY Continent
+ORDER BY customer_count DESC;
+
+
+ ####1. Average Order Value (AOV):
+SELECT 
+    sales.`Order Number`,
+    SUM(
+        sales.Quantity * CAST(REPLACE(REPLACE(products.`Unit Price USD`, ',', ''), '$', '') AS DECIMAL(10,2))
+    ) AS order_value
+FROM sales
+JOIN products ON sales.ProductKey = products.ProductKey
+GROUP BY sales.`Order Number`;
+SELECT 
+    sales.`Order Number`,
+    SUM(
+        sales.Quantity * CAST(REPLACE(REPLACE(products.`Unit Price USD`, ',', ''), '$', '') AS DECIMAL(10,2))
+    ) AS order_value
+FROM sales
+JOIN products ON sales.ProductKey = products.ProductKey
+GROUP BY sales.`Order Number`;
+
+SELECT 
+    AVG(order_value) AS average_order_value
+FROM (
+    SELECT 
+        sales.`Order Number`,
+        SUM(
+            sales.Quantity * CAST(REPLACE(REPLACE(products.`Unit Price USD`, ',', ''), '$', '') AS DECIMAL(10,2))
+        ) AS order_value
+    FROM sales
+    JOIN products ON sales.ProductKey = products.ProductKey
+    GROUP BY sales.`Order Number`
+) AS order_summary;
+
+ #####3Purchase Frequency per Customer:
+SELECT 
+    CustomerKey,
+    COUNT(DISTINCT `Order Number`) AS purchase_frequency
+FROM sales
+GROUP BY CustomerKey
+ORDER BY purchase_frequency DESC;
+###frequently purchased product
+SELECT 
+    products.`Product Name`,
+    COUNT(*) AS purchase_count
+FROM sales
+JOIN products ON sales.ProductKey = products.ProductKey
+GROUP BY products.`Product Name`
+ORDER BY purchase_count DESC;
+
+####based on age groupe customer count and avg_spending
+SELECT 
+    CASE 
+        WHEN Age BETWEEN 20 AND 29 THEN '20s'
+        WHEN Age BETWEEN 30 AND 39 THEN '30s'
+        WHEN Age BETWEEN 40 AND 49 THEN '40s'
+        WHEN Age BETWEEN 50 AND 59 THEN '50s'
+        ELSE '60+'
+    END AS Age_Group,
+    AVG(total_spent) AS avg_spending,
+    COUNT(*) AS customer_count
+FROM (
+    SELECT 
+        c.CustomerKey,
+        (2025 - c.b_year) AS Age,
+        SUM(s.Quantity * CAST(REPLACE(REPLACE(p.`Unit Price USD`, ',', ''), '$', '') AS DECIMAL(10,2))) AS total_spent
+    FROM customer c
+    JOIN sales s ON c.CustomerKey = s.CustomerKey
+    JOIN products p ON s.ProductKey = p.ProductKey
+    GROUP BY c.CustomerKey, c.b_year
+) AS customer_data
+GROUP BY Age_Group;
+
+
