@@ -1,0 +1,30 @@
+use electronics
+
+#####To evaluate store performance based on sales, store size, and operational age
+SELECT 
+    st.StoreKey,
+    st.Country,
+    st.State,
+    st.`Square Meters`,
+    (2025 - st.`open year`) AS store_age_years,
+    SUM(s.Quantity * CAST(REPLACE(REPLACE(p.`Unit Price USD`, ',', ''), '$', '') AS DECIMAL(10,2))) AS total_sales,
+    ROUND(SUM(s.Quantity * CAST(REPLACE(REPLACE(p.`Unit Price USD`, ',', ''), '$', '') AS DECIMAL(10,2))) / st.`Square Meters`, 2) AS sales_per_sqm
+FROM stores st
+JOIN sales s ON st.StoreKey = s.StoreKey
+JOIN products p ON s.ProductKey = p.ProductKey
+GROUP BY st.StoreKey, st.Country, st.State, st.`Square Meters`, st.`open year`
+ORDER BY total_sales DESC;
+
+
+
+######sales by state wise
+SELECT 
+    st.Country,
+    st.State,
+    SUM(s.Quantity * CAST(REPLACE(REPLACE(p.`Unit Price USD`, ',', ''), '$', '') AS DECIMAL(10,2))) AS total_sales
+FROM sales s
+JOIN stores st ON s.StoreKey = st.StoreKey
+JOIN products p ON s.ProductKey = p.ProductKey
+GROUP BY st.Country, st.State
+ORDER BY total_sales DESC;
+
