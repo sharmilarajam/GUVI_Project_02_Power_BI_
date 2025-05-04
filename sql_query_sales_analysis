@@ -1,0 +1,37 @@
+
+use electronics
+
+
+##product quantity sold   Products
+SELECT 
+    products.`Product Name`, 
+    SUM(sales.quantity) AS total_units_sold
+FROM sales
+JOIN products ON sales.ProductKey = products.ProductKey
+GROUP BY products.`Product Name`
+ORDER BY total_units_sold DESC;
+
+#####profit margin
+SELECT 
+    `Product Name`,
+    CAST(REPLACE(REPLACE(`Unit Price USD`, ',', ''), '$', '') AS DECIMAL(10,2)) AS unit_price,
+    CAST(REPLACE(REPLACE(`Unit Cost USD`, ',', ''), '$', '') AS DECIMAL(10,2)) AS unit_cost,
+    (CAST(REPLACE(REPLACE(`Unit Price USD`, ',', ''), '$', '') AS DECIMAL(10,2)) - 
+     CAST(REPLACE(REPLACE(`Unit Cost USD`, ',', ''), '$', '') AS DECIMAL(10,2))) AS profit_per_unit,
+    ROUND(100 * (
+        (CAST(REPLACE(REPLACE(`Unit Price USD`, ',', ''), '$', '') AS DECIMAL(10,2)) - 
+         CAST(REPLACE(REPLACE(`Unit Cost USD`, ',', ''), '$', '') AS DECIMAL(10,2)))
+        / NULLIF(CAST(REPLACE(REPLACE(`Unit Price USD`, ',', ''), '$', '') AS DECIMAL(10,2)), 0)
+    ), 2) AS profit_margin_percent
+FROM products
+ORDER BY profit_margin_percent DESC;
+
+##units sold  based on category
+SELECT 
+    products.Category,
+    products.Subcategory,
+    SUM(sales.quantity) AS total_units_sold
+FROM sales
+JOIN products ON sales.ProductKey = products.ProductKey
+GROUP BY products.Category, products.Subcategory
+ORDER BY total_units_sold DESC;
