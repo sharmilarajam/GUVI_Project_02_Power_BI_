@@ -70,7 +70,8 @@ The project uses the following datasets:
 
 Here is a snapshot of the interactive Power BI dashboard:
 
-![Dashboard Screenshot](project_02_screenshot.png)
+![Dashboard Screenshot](new1.png)
+![Dashboard Screenshot](new2.png)
 
    
   
